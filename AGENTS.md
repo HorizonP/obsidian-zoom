@@ -36,6 +36,19 @@ specs/                              # Markdown feature specs
 jest/                               # Jest environment and helpers
 ```
 
+## How This Plugin Works
+
+`ObsidianZoomPlugin` in `src/ObsidianZoomPlugin.ts` is the bootstrapper. In `onload()` it creates `SettingsService` and `LoggerService`, instantiates the feature objects, and loads them. The public helpers `zoomIn`, `zoomOut`, `refreshZoom`, and `getZoomRange` all delegate into the central zoom feature.
+
+- `ZoomFeature` is the main coordinator. It registers the core editor extension, exposes the zoom commands, and notifies other features after zoom in/out.
+- `CalculateRangeForZooming` decides what span of the document should stay visible. It uses foldable heading/list ranges when available, and falls back to single-list-item handling for plain list lines.
+- `KeepOnlyZoomedContentVisible` is the core hiding mechanism for markdown content. It uses a CodeMirror `StateField`, `Decoration.replace`, and `zoomInEffect` / `zoomOutEffect` to hide document text outside the selected range and to recover the visible range later.
+- `HeaderNavigationFeature` adds the breadcrumb header shown while zoomed. It combines `CollectBreadcrumbs`, `RenderNavigationHeader`, and `DetectRangeBeforeVisibleRangeChanged` so the header appears after zoom in, disappears after zoom out, and refreshes when the visible range shifts.
+- `LimitSelectionFeature` keeps cursor and selection behavior inside the visible area with `LimitSelectionOnZoomingIn` and `LimitSelectionWhenZoomedIn`.
+- `ResetZoomWhenVisibleContentBoundariesViolatedFeature` watches edits through `DetectVisibleContentBoundariesViolation` and automatically zooms out if changes break the assumptions around the hidden/visible boundaries.
+- `ZoomOnClickFeature` uses `DetectClickOnBullet` so clicking a list bullet can move the cursor and trigger zoom. `ListsStylesFeature` adds the CSS cues that make list bullets feel interactive.
+- `ViewChromeVisibilityFeature` handles non-document UI around the editor, such as inline title, properties, backlinks, or plugin-injected elements. It uses `zoomVisibility.ts` plus settings from `SettingsService` to compile scoped CSS that hides matching elements only inside the active markdown leaf while zoomed.
+
 ## Coding Guidance
 
 - Prefer minimal, behavior-focused changes.
