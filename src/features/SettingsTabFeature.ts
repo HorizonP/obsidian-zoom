@@ -3,6 +3,7 @@ import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 import { Feature } from "./Feature";
 
 import { SettingsService } from "../services/SettingsService";
+import { normalizeCustomHiddenSelectors } from "../utils/zoomVisibility";
 
 class ObsidianZoomPluginSettingTab extends PluginSettingTab {
   constructor(app: App, plugin: Plugin, private settings: SettingsService) {
@@ -33,6 +34,63 @@ class ObsidianZoomPluginSettingTab extends PluginSettingTab {
           this.settings.debug = value;
           await this.settings.save();
         });
+      });
+
+    containerEl.createEl("h3", { text: "Visibility while zoomed in" });
+
+    new Setting(containerEl)
+      .setName("Hide inline title")
+      .setDesc("Hide the note title shown above the editor while zoomed in.")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.settings.hideInlineTitle)
+          .onChange(async (value) => {
+            this.settings.hideInlineTitle = value;
+            await this.settings.save();
+          });
+      });
+
+    new Setting(containerEl)
+      .setName("Hide properties")
+      .setDesc("Hide the properties section while zoomed in.")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.settings.hideProperties)
+          .onChange(async (value) => {
+            this.settings.hideProperties = value;
+            await this.settings.save();
+          });
+      });
+
+    new Setting(containerEl)
+      .setName("Hide embedded backlinks")
+      .setDesc("Hide the in-document backlinks section while zoomed in.")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.settings.hideEmbeddedBacklinks)
+          .onChange(async (value) => {
+            this.settings.hideEmbeddedBacklinks = value;
+            await this.settings.save();
+          });
+      });
+
+    new Setting(containerEl)
+      .setName("Custom hidden selectors")
+      .setDesc(
+        "One CSS selector per line. Matching elements inside the current markdown pane will be hidden while zoomed in."
+      )
+      .addTextArea((textArea) => {
+        textArea
+          .setPlaceholder(".my-plugin-panel")
+          .setValue(this.settings.customHiddenSelectors.join("\n"))
+          .onChange(async (value) => {
+            this.settings.customHiddenSelectors =
+              normalizeCustomHiddenSelectors(value);
+            await this.settings.save();
+          });
+
+        textArea.inputEl.rows = 4;
+        textArea.inputEl.cols = 40;
       });
   }
 }

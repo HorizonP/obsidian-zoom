@@ -6,6 +6,7 @@ import { LimitSelectionFeature } from "./features/LimitSelectionFeature";
 import { ListsStylesFeature } from "./features/ListsStylesFeature";
 import { ResetZoomWhenVisibleContentBoundariesViolatedFeature } from "./features/ResetZoomWhenVisibleContentBoundariesViolatedFeature";
 import { SettingsTabFeature } from "./features/SettingsTabFeature";
+import { ViewChromeVisibilityFeature } from "./features/ViewChromeVisibilityFeature";
 import { ZoomFeature } from "./features/ZoomFeature";
 import { ZoomOnClickFeature } from "./features/ZoomOnClickFeature";
 import { LoggerService } from "./services/LoggerService";
@@ -56,6 +57,12 @@ export default class ObsidianZoomPlugin extends Plugin {
       this.zoomFeature,
       this.zoomFeature
     );
+    const viewChromeVisibilityFeature = new ViewChromeVisibilityFeature(
+      logger,
+      settings,
+      this.zoomFeature,
+      this.zoomFeature
+    );
     const zoomOnClickFeature = new ZoomOnClickFeature(
       this,
       settings,
@@ -69,6 +76,7 @@ export default class ObsidianZoomPlugin extends Plugin {
       limitSelectionFeature,
       resetZoomWhenVisibleContentBoundariesViolatedFeature,
       headerNavigationFeature,
+      viewChromeVisibilityFeature,
       zoomOnClickFeature,
       listsStylesFeature,
     ];
