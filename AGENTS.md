@@ -56,7 +56,14 @@ jest/                               # Jest environment and helpers
 - Do not hand-edit `main.js`; edit source under `src/` and rebuild.
 - Reuse the existing feature, logic, and service separation instead of adding cross-cutting code paths.
 - Follow existing TypeScript and test patterns in neighboring files before introducing new abstractions.
-- When changing behavior described in `specs/`, keep implementation, tests, and spec text aligned.
+- When changing user-visible behavior, use a spec-driven workflow: start the plan by identifying the spec updates, then implement the code change.
+- For new behavior, add both:
+  - a narrative Markdown spec in `specs/` that describes the feature in a user-facing way, following the style of `specs/ViewChromeVisibilityFeature.md`
+  - a matching executable `*.spec.md` file that covers the behavior in tests
+- For changes to existing behavior, update the existing narrative spec and the existing executable `*.spec.md` alongside the implementation.
+- Do not treat spec updates as optional follow-up documentation. The narrative spec, executable spec, and implementation should land together for behavior changes.
+- This spec-first requirement applies to feature and behavior changes, not to pure refactors, internal cleanup, or tooling-only changes with no user-visible effect.
+- When changing behavior described in `specs/`, keep implementation, unit/integration tests, narrative spec text, and executable `*.spec.md` coverage aligned.
 
 ## Validation Guidance
 

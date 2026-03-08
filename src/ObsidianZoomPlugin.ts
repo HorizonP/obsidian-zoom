@@ -20,6 +20,7 @@ declare global {
 }
 
 export default class ObsidianZoomPlugin extends Plugin {
+  protected settings: SettingsService;
   protected zoomFeature: ZoomFeature;
   protected features: Feature[];
 
@@ -28,12 +29,12 @@ export default class ObsidianZoomPlugin extends Plugin {
 
     window.ObsidianZoomPlugin = this;
 
-    const settings = new SettingsService(this);
-    await settings.load();
+    this.settings = new SettingsService(this);
+    await this.settings.load();
 
-    const logger = new LoggerService(settings);
+    const logger = new LoggerService(this.settings);
 
-    const settingsTabFeature = new SettingsTabFeature(this, settings);
+    const settingsTabFeature = new SettingsTabFeature(this, this.settings);
     this.zoomFeature = new ZoomFeature(this, logger);
     const limitSelectionFeature = new LimitSelectionFeature(
       this,
@@ -59,16 +60,16 @@ export default class ObsidianZoomPlugin extends Plugin {
     );
     const viewChromeVisibilityFeature = new ViewChromeVisibilityFeature(
       logger,
-      settings,
+      this.settings,
       this.zoomFeature,
       this.zoomFeature
     );
     const zoomOnClickFeature = new ZoomOnClickFeature(
       this,
-      settings,
+      this.settings,
       this.zoomFeature
     );
-    const listsStylesFeature = new ListsStylesFeature(settings);
+    const listsStylesFeature = new ListsStylesFeature(this.settings);
 
     this.features = [
       settingsTabFeature,

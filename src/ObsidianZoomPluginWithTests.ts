@@ -6,6 +6,10 @@ import { EditorView, runScopeHandlers } from "@codemirror/view";
 
 import ObsidianZoomPlugin from "./ObsidianZoomPlugin";
 import { zoomOutEffect } from "./logic/utils/effects";
+import {
+  buildHiddenElementSelectors,
+  compileScopedHiddenElementsCss,
+} from "./utils/zoomVisibility";
 
 const keysMap: { [key: string]: number } = {
   Backspace: 8,
@@ -32,6 +36,30 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
 
   replaceSelection(char: string) {
     this.editorView.dispatch(this.editorView.state.replaceSelection(char));
+  }
+
+  async applySettings(settings: Partial<IZoomVisibilitySettings>) {
+    if ("hideInlineTitle" in settings) {
+      this.settings.hideInlineTitle = Boolean(settings.hideInlineTitle);
+    }
+    if ("hideProperties" in settings) {
+      this.settings.hideProperties = Boolean(settings.hideProperties);
+    }
+    if ("hideEmbeddedBacklinks" in settings) {
+      this.settings.hideEmbeddedBacklinks = Boolean(
+        settings.hideEmbeddedBacklinks
+      );
+    }
+    if ("customHiddenSelectors" in settings) {
+      this.settings.customHiddenSelectors = Array.isArray(
+        settings.customHiddenSelectors
+      )
+        ? settings.customHiddenSelectors
+        : [];
+    }
+
+    await this.settings.save();
+    await this.wait(10);
   }
 
   simulateKeydown(keys: string) {
@@ -129,7 +157,7 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
     await this.prepareForTests();
     ws.send("ready");
 
-    ws.addEventListener("message", (event) => {
+    ws.addEventListener("message", async (event) => {
       const { id, type, data } = JSON.parse(event.data);
 
       let result;
@@ -139,6 +167,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
         switch (type) {
           case "applyState":
             this.applyState(data);
+            break;
+          case "applySettings":
+            await this.applySettings(data);
             break;
           case "simulateKeydown":
             this.simulateKeydown(data);
@@ -154,6 +185,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
             break;
           case "getCurrentState":
             result = this.getCurrentState();
+            break;
+          case "getCurrentViewChromeState":
+            result = this.getCurrentViewChromeState();
             break;
         }
       } catch (e) {
@@ -229,6 +263,60 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
         head: r.head,
       })),
       value: this.editorView.state.doc.sliceString(0),
+    };
+  }
+
+  getCurrentViewChromeState(): IViewChromeState {
+    const root = this.editorView.dom.closest<HTMLElement>(
+      '.workspace-leaf-content[data-type="markdown"]'
+    );
+
+    if (!root) {
+      return {
+        active: false,
+        rootAttrPresent: false,
+        rootClassPresent: false,
+        selectors: [],
+      };
+    }
+
+    const rootAttrPresent = root.hasAttribute("data-zoom-plugin-root-id");
+    const rootClassPresent = root.classList.contains(
+      "zoom-plugin-hide-view-chrome"
+    );
+    const styleEl = root.querySelector<HTMLStyleElement>(
+      "style.zoom-plugin-view-chrome-style"
+    );
+    const rootId = root.getAttribute("data-zoom-plugin-root-id");
+
+    if (
+      !rootAttrPresent ||
+      !rootClassPresent ||
+      !styleEl?.isConnected ||
+      !rootId
+    ) {
+      return {
+        active: false,
+        rootAttrPresent,
+        rootClassPresent,
+        selectors: [],
+      };
+    }
+
+    const scopeSelector = `.workspace-leaf-content[data-zoom-plugin-root-id="${rootId}"]`;
+    const { validSelectors } = compileScopedHiddenElementsCss(
+      root.ownerDocument,
+      scopeSelector,
+      buildHiddenElementSelectors(this.settings)
+    );
+
+    return {
+      active: validSelectors.length > 0,
+      rootAttrPresent,
+      rootClassPresent,
+      selectors: validSelectors.map((selector) =>
+        selector.replace(`${scopeSelector} `, "")
+      ),
     };
   }
 

@@ -103,7 +103,7 @@ export class ViewChromeVisibilityFeature implements Feature {
     const selectors = buildHiddenElementSelectors(this.settings);
 
     if (selectors.length === 0) {
-      this.clearRoot(root);
+      this.clearRoot(root, true);
       return;
     }
 
@@ -124,7 +124,7 @@ export class ViewChromeVisibilityFeature implements Feature {
     }
 
     if (!cssText) {
-      this.clearRoot(root);
+      this.clearRoot(root, true);
       return;
     }
 
@@ -137,7 +137,7 @@ export class ViewChromeVisibilityFeature implements Feature {
     }
   }
 
-  private clearRoot(root: HTMLElement) {
+  private clearRoot(root: HTMLElement, preserveState = false) {
     const state = this.activeRoots.get(root);
 
     root.classList.remove(ZOOM_ROOT_CLASS);
@@ -145,7 +145,9 @@ export class ViewChromeVisibilityFeature implements Feature {
 
     if (state) {
       state.styleEl.remove();
-      this.activeRoots.delete(root);
+      if (!preserveState) {
+        this.activeRoots.delete(root);
+      }
     }
   }
 

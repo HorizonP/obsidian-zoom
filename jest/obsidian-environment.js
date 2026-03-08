@@ -10,11 +10,13 @@ module.exports = class CustomEnvironment extends TestEnvironment {
     this.callbacks = new Map();
 
     this.createCommand("applyState");
+    this.createCommand("applySettings");
     this.createCommand("simulateKeydown");
     this.createCommand("executeCommandById");
     this.createCommand("replaceSelection");
     this.createCommand("parseState");
     this.createCommand("getCurrentState");
+    this.createCommand("getCurrentViewChromeState");
   }
 
   createCommand(type) {

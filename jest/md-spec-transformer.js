@@ -10,10 +10,10 @@ function isCodeBlock(line) {
   return line.startsWith("```");
 }
 
-function parseState(l) {
+function parseCodeBlock(l, errorPrefix) {
   if (!isCodeBlock(l.line)) {
     throw new Error(
-      `parseState: Unexpected line "${l.line}", expected "\`\`\`"`
+      `${errorPrefix}: Unexpected line "${l.line}", expected "\`\`\`"`
     );
   }
 
@@ -23,15 +23,29 @@ function parseState(l) {
     l.next();
 
     if (l.isEnded()) {
-      throw new Error(`parseState: Unexpected EOF, expected "\`\`\`"`);
+      throw new Error(`${errorPrefix}: Unexpected EOF, expected "\`\`\`"`);
     } else if (isCodeBlock(l.line)) {
       l.nextNotEmpty();
-      return {
-        lines,
-      };
+      return lines;
     } else {
       lines.push(l.line);
     }
+  }
+}
+
+function parseState(l) {
+  return {
+    lines: parseCodeBlock(l, "parseState"),
+  };
+}
+
+function parseJsonBlock(l, errorPrefix) {
+  const lines = parseCodeBlock(l, errorPrefix);
+
+  try {
+    return JSON.parse(lines.join("\n"));
+  } catch (error) {
+    throw new Error(`${errorPrefix}: Invalid JSON: ${error.message}`);
   }
 }
 
@@ -50,6 +64,24 @@ function parseAssertState(l) {
   return {
     type: "assertState",
     state: parseState(l),
+  };
+}
+
+function parseApplySettings(l) {
+  l.nextNotEmpty();
+
+  return {
+    type: "applySettings",
+    settings: parseJsonBlock(l, "parseApplySettings"),
+  };
+}
+
+function parseAssertViewChrome(l) {
+  l.nextNotEmpty();
+
+  return {
+    type: "assertViewChrome",
+    state: parseJsonBlock(l, "parseAssertViewChrome"),
   };
 }
 
@@ -106,6 +138,8 @@ function parseAction(l) {
 
   if (l.line.startsWith("- applyState:")) {
     return parseApplyState(l);
+  } else if (l.line.startsWith("- applySettings:")) {
+    return parseApplySettings(l);
   } else if (l.line.startsWith("- keydown:")) {
     return parseSimulateKeydown(l);
   } else if (l.line.startsWith("- execute:")) {
@@ -114,6 +148,8 @@ function parseAction(l) {
     return parseReplaceSelection(l);
   } else if (l.line.startsWith("- assertState:")) {
     return parseAssertState(l);
+  } else if (l.line.startsWith("- assertViewChrome:")) {
+    return parseAssertViewChrome(l);
   } else if (l.line.startsWith("- platform:")) {
     return parsePlatform(l);
   }
@@ -203,6 +239,9 @@ module.exports.process = function process(sourceText, sourcePath, options) {
         case "simulateKeydown":
           code += `    await simulateKeydown(${s(action.key)});\n`;
           break;
+        case "applySettings":
+          code += `    await applySettings(${s(action.settings)});\n`;
+          break;
         case "executeCommandById":
           code += `    await executeCommandById(${s(action.command)});\n`;
           break;
@@ -214,6 +253,13 @@ module.exports.process = function process(sourceText, sourcePath, options) {
           code += `    await new Promise((resolve) => setTimeout(resolve, 10));\n`;
           code += `    await expect(await getCurrentState()).toEqualEditorState(${s(
             action.state.lines
+          )});\n`;
+          break;
+        case "assertViewChrome":
+          code += `    // Waiting for all operations to be applied\n`;
+          code += `    await new Promise((resolve) => setTimeout(resolve, 10));\n`;
+          code += `    await expect(await getCurrentViewChromeState()).toEqual(${s(
+            action.state
           )});\n`;
           break;
       }

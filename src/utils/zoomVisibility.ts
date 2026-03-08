@@ -53,7 +53,11 @@ export function compileScopedHiddenElementsCss(
   doc: Pick<Document, "querySelector">,
   scopeSelector: string,
   selectors: string[]
-): { cssText: string; invalidSelectors: string[] } {
+): {
+  cssText: string;
+  invalidSelectors: string[];
+  validSelectors: string[];
+} {
   const validSelectors: string[] = [];
   const invalidSelectors: string[] = [];
 
@@ -69,11 +73,12 @@ export function compileScopedHiddenElementsCss(
   }
 
   if (validSelectors.length === 0) {
-    return { cssText: "", invalidSelectors };
+    return { cssText: "", invalidSelectors, validSelectors };
   }
 
   return {
     cssText: `${validSelectors.join(",\n")} {\n  display: none !important;\n}`,
     invalidSelectors,
+    validSelectors,
   };
 }
