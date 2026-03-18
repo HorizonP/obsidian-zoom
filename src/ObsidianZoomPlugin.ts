@@ -15,19 +15,19 @@ import { getEditorViewFromEditor } from "./utils/getEditorViewFromEditor";
 
 declare global {
   interface Window {
-    ObsidianZoomPlugin?: ObsidianZoomPlugin;
+    EnhancedZoomPlugin?: EnhancedZoomPlugin;
   }
 }
 
-export default class ObsidianZoomPlugin extends Plugin {
+export default class EnhancedZoomPlugin extends Plugin {
   protected settings: SettingsService;
   protected zoomFeature: ZoomFeature;
   protected features: Feature[];
 
   async onload() {
-    console.log(`Loading obsidian-zoom`);
+    console.log(`Loading enhanced-zoom`);
 
-    window.ObsidianZoomPlugin = this;
+    window.EnhancedZoomPlugin = this;
 
     this.settings = new SettingsService(this);
     await this.settings.load();
@@ -88,9 +88,9 @@ export default class ObsidianZoomPlugin extends Plugin {
   }
 
   async onunload() {
-    console.log(`Unloading obsidian-zoom`);
+    console.log(`Unloading enhanced-zoom`);
 
-    delete window.ObsidianZoomPlugin;
+    delete window.EnhancedZoomPlugin;
 
     for (const feature of this.features) {
       await feature.unload();

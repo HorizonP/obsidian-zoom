@@ -22,8 +22,8 @@ interface RootState {
   styleEl: HTMLStyleElement;
 }
 
-const ZOOM_ROOT_ATTR = "data-zoom-plugin-root-id";
-const ZOOM_ROOT_CLASS = "zoom-plugin-hide-view-chrome";
+const ZOOM_ROOT_ATTR = "data-enhanced-zoom-root-id";
+const ZOOM_ROOT_CLASS = "enhanced-zoom-hide-view-chrome";
 
 export class ViewChromeVisibilityFeature implements Feature {
   private activeRoots = new Map<HTMLElement, RootState>();
@@ -163,7 +163,7 @@ export class ViewChromeVisibilityFeature implements Feature {
       styleEl: root.ownerDocument.createElement("style"),
     };
 
-    state.styleEl.classList.add("zoom-plugin-view-chrome-style");
+    state.styleEl.classList.add("enhanced-zoom-view-chrome-style");
     this.activeRoots.set(root, state);
 
     return state;

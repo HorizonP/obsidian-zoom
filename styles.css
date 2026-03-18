@@ -1,4 +1,4 @@
-.zoom-plugin-header {
+.enhanced-zoom-header {
   display: flex;
   flex-wrap: wrap;
   margin: var(--file-margins);
@@ -6,22 +6,89 @@
   margin-bottom: var(--size-4-2);
 }
 
-.zoom-plugin-title {
+.enhanced-zoom-title {
+  display: inline-flex;
+  align-items: center;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.zoom-plugin-delimiter {
+.enhanced-zoom-delimiter {
   display: inline-block;
   padding: 0 var(--size-4-2);
 }
 
-.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol,
-.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ul {
+/* Breadcrumb icon */
+.enhanced-zoom-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.enhanced-zoom-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Heading badge (H1-H6 text label) */
+.enhanced-zoom-heading-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--background-modifier-hover);
+  line-height: 1.4;
+}
+
+/* Heading-level styles via theme CSS variables */
+.enhanced-zoom-title[data-heading-level="1"] {
+  color: var(--h1-color);
+  font-weight: var(--h1-weight);
+  font-style: var(--h1-style);
+  font-variant: var(--h1-variant);
+}
+
+.enhanced-zoom-title[data-heading-level="2"] {
+  color: var(--h2-color);
+  font-weight: var(--h2-weight);
+  font-style: var(--h2-style);
+  font-variant: var(--h2-variant);
+}
+
+.enhanced-zoom-title[data-heading-level="3"] {
+  color: var(--h3-color);
+  font-weight: var(--h3-weight);
+  font-style: var(--h3-style);
+  font-variant: var(--h3-variant);
+}
+
+.enhanced-zoom-title[data-heading-level="4"] {
+  color: var(--h4-color);
+  font-weight: var(--h4-weight);
+  font-style: var(--h4-style);
+  font-variant: var(--h4-variant);
+}
+
+.enhanced-zoom-title[data-heading-level="5"] {
+  color: var(--h5-color);
+  font-weight: var(--h5-weight);
+  font-style: var(--h5-style);
+  font-variant: var(--h5-variant);
+}
+
+.enhanced-zoom-title[data-heading-level="6"] {
+  color: var(--h6-color);
+  font-weight: var(--h6-weight);
+  font-style: var(--h6-style);
+  font-variant: var(--h6-variant);
+}
+
+.enhanced-zoom-bls-zoom .cm-editor .cm-formatting-list-ol,
+.enhanced-zoom-bls-zoom .cm-editor .cm-formatting-list-ul {
   cursor: pointer;
 }
 
-.zoom-plugin-bls-zoom
+.enhanced-zoom-bls-zoom
   .markdown-source-view.mod-cm6
   .cm-fold-indicator
   .collapse-indicator {
@@ -29,7 +96,7 @@
   padding-right: 0;
 }
 
-.zoom-plugin-bls-zoom
+.enhanced-zoom-bls-zoom
   .markdown-source-view.mod-cm6
   .cm-line:not(.cm-active):not(.HyperMD-header):not(.HyperMD-task-line)
   .cm-fold-indicator

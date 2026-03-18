@@ -1,6 +1,6 @@
 # AGENTS.md - Obsidian Zoom Plugin
 
-Guidelines for AI coding agents working on this fork of `vslinko/obsidian-zoom`.
+Guidelines for AI coding agents working on this fork of `vslinko/enhanced-zoom`.
 
 ## Project Overview
 
@@ -69,11 +69,11 @@ jest/                               # Jest environment and helpers
 
 - For pure logic changes, run the most relevant Jest tests first.
 - For broader behavior changes, run `npm test` after `npm run build-with-tests`.
-- For plugin behavior changes, run `npm run build` or `npm run dev` and reload Obsidian to verify the plugin from the local `.obsidian/plugins/obsidian-zoom` folder.
+- For plugin behavior changes, run `npm run build` or `npm run dev` and reload Obsidian to verify the plugin from the local `.obsidian/plugins/enhanced-zoom` folder.
 - Keep lint clean with `npm run lint` when touching TypeScript source substantially.
 
 ## Fork Workflow Notes
 
 - `origin` is the user-owned fork.
-- `upstream` points to `vslinko/obsidian-zoom`.
+- `upstream` points to `vslinko/enhanced-zoom`.
 - This repo is used as a local development plugin inside an Obsidian vault, so community-plugin auto-updates should not be relied on.

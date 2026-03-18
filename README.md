@@ -1,17 +1,17 @@
 # Obsidian Zoom
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/vslinko/obsidian-zoom/release.yml?style=for-the-badge)
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/vslinko/obsidian-zoom?style=for-the-badge&sort=semver)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/vslinko/enhanced-zoom/release.yml?style=for-the-badge)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/vslinko/enhanced-zoom?style=for-the-badge&sort=semver)
 
 **Zoom into heading and lists**
 
-⁉️ [Discuss ideas or ask a question](https://github.com/vslinko/obsidian-zoom/discussions)<br>
+⁉️ [Discuss ideas or ask a question](https://github.com/vslinko/enhanced-zoom/discussions)<br>
 ⚙️ [Follow the development process](https://github.com/users/vslinko/projects/3/views/1)<br>
-🐛 [Report issues](https://github.com/vslinko/obsidian-zoom/issues)
+🐛 [Report issues](https://github.com/vslinko/enhanced-zoom/issues)
 
 ## Demo
 
-![Demo](https://raw.githubusercontent.com/vslinko/obsidian-zoom/main/demo.gif)
+![Demo](https://raw.githubusercontent.com/vslinko/enhanced-zoom/main/demo.gif)
 
 ## How to install
 
@@ -28,7 +28,7 @@ You can activate this plugin within Obsidian by doing the following:
 
 ### Manual installation
 
-Download `main.js`, `manifest.json`, `styles.css` from the [latest release](https://github.com/vslinko/obsidian-zoom/releases/latest) and put them into `<vault>/.obsidian/plugins/obsidian-zoom` folder.
+Download `main.js`, `manifest.json`, `styles.css` from the [latest release](https://github.com/vslinko/enhanced-zoom/releases/latest) and put them into `<vault>/.obsidian/plugins/enhanced-zoom` folder.
 
 ## Features
 

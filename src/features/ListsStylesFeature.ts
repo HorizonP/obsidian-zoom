@@ -31,10 +31,10 @@ export class ListsStylesFeature implements Feature {
   };
 
   private addZoomStyles() {
-    document.body.classList.add("zoom-plugin-bls-zoom");
+    document.body.classList.add("enhanced-zoom-bls-zoom");
   }
 
   private removeZoomStyles() {
-    document.body.classList.remove("zoom-plugin-bls-zoom");
+    document.body.classList.remove("enhanced-zoom-bls-zoom");
   }
 }

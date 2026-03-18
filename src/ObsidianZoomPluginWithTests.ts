@@ -4,7 +4,7 @@ import { foldEffect, foldedRanges } from "@codemirror/language";
 import { EditorSelection, StateField } from "@codemirror/state";
 import { EditorView, runScopeHandlers } from "@codemirror/view";
 
-import ObsidianZoomPlugin from "./ObsidianZoomPlugin";
+import EnhancedZoomPlugin from "./ObsidianZoomPlugin";
 import { zoomOutEffect } from "./logic/utils/effects";
 import {
   buildHiddenElementSelectors,
@@ -22,7 +22,7 @@ const keysMap: { [key: string]: number } = {
   KeyA: 65,
 };
 
-export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
+export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
   private editorView: EditorView;
 
   wait(time: number) {
@@ -280,14 +280,14 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
       };
     }
 
-    const rootAttrPresent = root.hasAttribute("data-zoom-plugin-root-id");
+    const rootAttrPresent = root.hasAttribute("data-enhanced-zoom-root-id");
     const rootClassPresent = root.classList.contains(
-      "zoom-plugin-hide-view-chrome"
+      "enhanced-zoom-hide-view-chrome"
     );
     const styleEl = root.querySelector<HTMLStyleElement>(
-      "style.zoom-plugin-view-chrome-style"
+      "style.enhanced-zoom-view-chrome-style"
     );
-    const rootId = root.getAttribute("data-zoom-plugin-root-id");
+    const rootId = root.getAttribute("data-enhanced-zoom-root-id");
 
     if (
       !rootAttrPresent ||
@@ -303,7 +303,7 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
       };
     }
 
-    const scopeSelector = `.workspace-leaf-content[data-zoom-plugin-root-id="${rootId}"]`;
+    const scopeSelector = `.workspace-leaf-content[data-enhanced-zoom-root-id="${rootId}"]`;
     const { validSelectors } = compileScopedHiddenElementsCss(
       root.ownerDocument,
       scopeSelector,

@@ -1,14 +1,12 @@
+import { setIcon } from "obsidian";
+
 import { StateEffect, StateField } from "@codemirror/state";
 import { EditorView, showPanel } from "@codemirror/view";
 
+import { Breadcrumb } from "./CollectBreadcrumbs";
 import { renderHeader } from "./utils/renderHeader";
 
 import { LoggerService } from "../services/LoggerService";
-
-export interface Breadcrumb {
-  title: string;
-  pos: number | null;
-}
 
 export interface ZoomIn {
   zoomIn(view: EditorView, pos: number): void;
@@ -50,6 +48,7 @@ const headerState = StateField.define<HeaderState | null>({
         dom: renderHeader(view.dom.ownerDocument, {
           breadcrumbs: state.breadcrumbs,
           onClick: (pos) => state.onClick(view, pos),
+          setIcon,
         }),
       });
     }),

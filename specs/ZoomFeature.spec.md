@@ -18,7 +18,7 @@ text
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-in`
 - assertState:
 
 ```md
@@ -57,8 +57,8 @@ text
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
-- execute: `obsidian-zoom:zoom-out`
+- execute: `enhanced-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-out`
 - assertState:
 
 ```md

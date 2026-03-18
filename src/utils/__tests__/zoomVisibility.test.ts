@@ -29,12 +29,12 @@ test("should build selector list from presets and custom selectors", () => {
 test("should compile scoped css and skip invalid selectors", () => {
   const { cssText, invalidSelectors } = compileScopedHiddenElementsCss(
     document,
-    '.workspace-leaf-content[data-zoom-plugin-root-id="1"]',
+    '.workspace-leaf-content[data-enhanced-zoom-root-id="1"]',
     [".inline-title", "???"]
   );
 
   expect(cssText).toBe(
-    '.workspace-leaf-content[data-zoom-plugin-root-id="1"] .inline-title {\n  display: none !important;\n}'
+    '.workspace-leaf-content[data-enhanced-zoom-root-id="1"] .inline-title {\n  display: none !important;\n}'
   );
   expect(invalidSelectors).toEqual(["???"]);
 });

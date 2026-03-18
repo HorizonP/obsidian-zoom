@@ -19,7 +19,7 @@
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-in`
 - assertViewChrome:
 
 ```json
@@ -52,7 +52,7 @@ text
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-in`
 - assertViewChrome:
 
 ```json
@@ -93,7 +93,7 @@ text
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-in`
 - assertViewChrome:
 
 ```json
@@ -130,7 +130,7 @@ text
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-in`
 - assertViewChrome:
 
 ```json
@@ -145,7 +145,7 @@ text
 }
 ```
 
-- execute: `obsidian-zoom:zoom-out`
+- execute: `enhanced-zoom:zoom-out`
 - assertViewChrome:
 
 ```json
@@ -178,7 +178,7 @@ text
 text
 ```
 
-- execute: `obsidian-zoom:zoom-in`
+- execute: `enhanced-zoom:zoom-in`
 - assertViewChrome:
 
 ```json

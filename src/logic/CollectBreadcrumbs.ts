@@ -2,10 +2,15 @@ import { foldable } from "@codemirror/language";
 import { EditorState } from "@codemirror/state";
 
 import { cleanTitle } from "./utils/cleanTitle";
+import {
+  BreadcrumbType,
+  detectBreadcrumbType,
+} from "./utils/detectBreadcrumbType";
 
 export interface Breadcrumb {
   title: string;
   pos: number | null;
+  type: BreadcrumbType;
 }
 
 export interface GetDocumentTitle {
@@ -17,7 +22,11 @@ export class CollectBreadcrumbs {
 
   public collectBreadcrumbs(state: EditorState, pos: number) {
     const breadcrumbs: Breadcrumb[] = [
-      { title: this.getDocumentTitle.getDocumentTitle(state), pos: null },
+      {
+        title: this.getDocumentTitle.getDocumentTitle(state),
+        pos: null,
+        type: { kind: "root" },
+      },
     ];
 
     const posLine = state.doc.lineAt(pos);
@@ -26,13 +35,18 @@ export class CollectBreadcrumbs {
       const line = state.doc.line(i);
       const f = foldable(state, line.from, line.to);
       if (f && f.to > posLine.from) {
-        breadcrumbs.push({ title: cleanTitle(line.text), pos: line.from });
+        breadcrumbs.push({
+          title: cleanTitle(line.text),
+          pos: line.from,
+          type: detectBreadcrumbType(line.text),
+        });
       }
     }
 
     breadcrumbs.push({
       title: cleanTitle(posLine.text),
       pos: posLine.from,
+      type: detectBreadcrumbType(posLine.text),
     });
 
     return breadcrumbs;
