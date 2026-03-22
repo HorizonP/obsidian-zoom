@@ -68,7 +68,14 @@ jest/                               # Jest environment and helpers
 ## Validation Guidance
 
 - For pure logic changes, run the most relevant Jest tests first.
+- Pure logic Jest tests can usually be run without launching Obsidian by prefixing with `SKIP_OBSIDIAN=1` (for example `SKIP_OBSIDIAN=1 npm test -- --runInBand CalculateRangeForZooming`).
 - For broader behavior changes, run `npm test` after `npm run build-with-tests`.
+- Obsidian-backed Jest/spec runs are fragile: do not run multiple Jest commands in parallel, and prefer `--runInBand` for spec/integration tests.
+- Run `npm run build-with-tests` before Obsidian-backed spec tests so the copied `main.js` matches the current source.
+- If an Obsidian-backed Jest run crashes, check for leftover test infrastructure before rerunning:
+  - a LevelDB lock under `~/Library/Application Support/obsidian/Local Storage/leveldb`
+  - a stale helper server still listening on port `8080`
+- The existing warning `Jest did not exit one second after the test run has completed` may still appear after a passing Obsidian-backed run; treat it as a harness cleanup issue, not an automatic test failure.
 - For plugin behavior changes, run `npm run build` or `npm run dev` and reload Obsidian to verify the plugin from the local `.obsidian/plugins/enhanced-zoom` folder.
 - Keep lint clean with `npm run lint` when touching TypeScript source substantially.
 
