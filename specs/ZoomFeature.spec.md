@@ -76,3 +76,41 @@ text
 
 text
 ```
+
+# Should zoom into empty heading at end of doc
+
+- applyState:
+
+```md
+text
+
+# Empty|
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- assertState:
+
+```md
+text #hidden
+ #hidden
+# Empty|
+```
+
+# Should zoom into empty heading between headings
+
+- applyState:
+
+```md
+# First
+## Second|
+# Third
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- assertState:
+
+```md
+# First #hidden
+## Second|
+# Third #hidden
+```

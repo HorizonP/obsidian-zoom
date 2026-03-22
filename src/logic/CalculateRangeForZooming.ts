@@ -6,6 +6,10 @@ export class CalculateRangeForZooming {
     const line = state.doc.lineAt(pos);
     const foldRange = foldable(state, line.from, line.to);
 
+    if (!foldRange && /^\s*#{1,6}\s/.test(line.text)) {
+      return { from: line.from, to: line.to };
+    }
+
     if (!foldRange && /^\s*([-*+]|\d+\.)\s+/.test(line.text)) {
       return { from: line.from, to: line.to };
     }
