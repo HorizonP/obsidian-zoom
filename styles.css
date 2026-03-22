@@ -1,6 +1,7 @@
 .enhanced-zoom-header {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   margin: var(--file-margins);
   margin-top: var(--size-4-2);
   margin-bottom: var(--size-4-2);
@@ -9,8 +10,14 @@
 .enhanced-zoom-title {
   display: inline-flex;
   align-items: center;
+  min-width: 0;
+}
+
+.enhanced-zoom-title-text {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-inline-size: 24ch;
 }
 
 .enhanced-zoom-delimiter {

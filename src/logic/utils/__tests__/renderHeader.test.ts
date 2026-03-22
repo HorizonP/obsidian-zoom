@@ -19,18 +19,23 @@ test("should render html with icons and heading styles", () => {
   // Root icon
   const rootIcon = titles[0].querySelector(".enhanced-zoom-icon");
   expect(rootIcon).not.toBeNull();
-  expect(rootIcon!.textContent).toBe("\u{1F4C4}");
+  expect(rootIcon?.textContent).toBe("\u{1F4C4}");
 
   // Heading icon with badge
   const headingIcon = titles[1].querySelector(".enhanced-zoom-icon");
   expect(headingIcon).not.toBeNull();
-  expect(headingIcon!.textContent).toBe("H1");
-  expect(headingIcon!.classList.contains("enhanced-zoom-heading-badge")).toBe(
+  expect(headingIcon?.textContent).toBe("H1");
+  expect(headingIcon?.classList.contains("enhanced-zoom-heading-badge")).toBe(
     true
   );
 
   // Heading data attribute
+  expect(titles[1].dataset.kind).toBe("heading");
   expect(titles[1].dataset.headingLevel).toBe("1");
+  expect(titles[1].title).toBe("header 1");
+  expect(
+    titles[1].querySelector(".enhanced-zoom-title-text")?.textContent
+  ).toBe("header 1");
 });
 
 test("should render list and task icons", () => {
@@ -50,6 +55,31 @@ test("should render list and task icons", () => {
   expect(icons[2].textContent).toBe("\u2610"); // unchecked
   expect(icons[3].textContent).toBe("\u2611"); // checked
   expect(icons[4].textContent).toBe("1."); // numbered
+  expect(
+    h.querySelectorAll<HTMLAnchorElement>(".enhanced-zoom-title")[2].dataset
+      .kind
+  ).toBe("task");
+});
+
+test("should expose cleaned title through tooltip text", () => {
+  const h = renderHeader(document, {
+    breadcrumbs: [
+      {
+        title: "Display Text",
+        pos: 10,
+        type: { kind: "heading", level: 2 },
+      },
+    ],
+    onClick: () => {},
+  });
+
+  const title = h.querySelector<HTMLAnchorElement>(".enhanced-zoom-title");
+
+  expect(title).not.toBeNull();
+  expect(title?.title).toBe("Display Text");
+  expect(title?.querySelector(".enhanced-zoom-title-text")?.textContent).toBe(
+    "Display Text"
+  );
 });
 
 test("should handle click on document link", () => {

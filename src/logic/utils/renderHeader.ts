@@ -29,6 +29,8 @@ export function renderHeader(
     const b = doc.createElement("a");
     b.classList.add("enhanced-zoom-title");
     b.dataset.pos = String(breadcrumb.pos);
+    b.dataset.kind = breadcrumb.type.kind;
+    b.title = breadcrumb.title;
 
     // Add icon
     const iconEl = doc.createElement("span");
@@ -70,8 +72,12 @@ export function renderHeader(
         break;
     }
 
+    const textEl = doc.createElement("span");
+    textEl.classList.add("enhanced-zoom-title-text");
+    textEl.textContent = breadcrumb.title;
+
     b.appendChild(iconEl);
-    b.appendChild(doc.createTextNode(breadcrumb.title));
+    b.appendChild(textEl);
     b.addEventListener("click", (e) => {
       e.preventDefault();
       const t = (e.target as HTMLElement).closest(

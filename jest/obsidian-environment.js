@@ -17,6 +17,7 @@ module.exports = class CustomEnvironment extends TestEnvironment {
     this.createCommand("parseState");
     this.createCommand("getCurrentState");
     this.createCommand("getCurrentViewChromeState");
+    this.createCommand("getCurrentHeaderState");
   }
 
   createCommand(type) {

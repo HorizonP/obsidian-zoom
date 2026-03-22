@@ -22,6 +22,38 @@ const keysMap: { [key: string]: number } = {
   KeyA: 65,
 };
 
+interface IHeaderItemState {
+  text: string;
+  title: string;
+  headingLevel?: string;
+  kind: string;
+  textOverflow: string;
+  whiteSpace: string;
+  overflow: string;
+  maxInlineSize: string;
+}
+
+interface IHeaderState {
+  active: boolean;
+  justifyContent: string;
+  items: IHeaderItemState[];
+}
+
+function readStyleValue(
+  styles: CSSStyleDeclaration,
+  camelCaseName: keyof CSSStyleDeclaration,
+  cssName: string,
+  fallback = ""
+) {
+  const value = styles[camelCaseName];
+
+  if (typeof value === "string" && value.length > 0) {
+    return value;
+  }
+
+  return styles.getPropertyValue(cssName) || fallback;
+}
+
 export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
   private editorView: EditorView;
 
@@ -189,6 +221,9 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
           case "getCurrentViewChromeState":
             result = this.getCurrentViewChromeState();
             break;
+          case "getCurrentHeaderState":
+            result = this.getCurrentHeaderState();
+            break;
         }
       } catch (e) {
         error = String(e);
@@ -317,6 +352,60 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
       selectors: validSelectors.map((selector) =>
         selector.replace(`${scopeSelector} `, "")
       ),
+    };
+  }
+
+  getCurrentHeaderState(): IHeaderState {
+    const header = this.editorView.dom.ownerDocument.querySelector<HTMLElement>(
+      ".enhanced-zoom-header"
+    );
+
+    if (!header) {
+      return {
+        active: false,
+        justifyContent: "",
+        items: [],
+      };
+    }
+
+    const headerStyles = getComputedStyle(header);
+    const items = Array.from(
+      header.querySelectorAll<HTMLAnchorElement>(".enhanced-zoom-title")
+    ).map((item) => {
+      const textEl = item.querySelector<HTMLElement>(
+        ".enhanced-zoom-title-text"
+      );
+      const textStyles = textEl ? getComputedStyle(textEl) : null;
+
+      return {
+        text: textEl?.textContent ?? "",
+        title: item.title,
+        headingLevel: item.dataset.headingLevel,
+        kind: item.dataset.kind ?? "",
+        textOverflow: textStyles
+          ? readStyleValue(textStyles, "textOverflow", "text-overflow")
+          : "",
+        whiteSpace: textStyles
+          ? readStyleValue(textStyles, "whiteSpace", "white-space")
+          : "",
+        overflow: textStyles
+          ? readStyleValue(textStyles, "overflow", "overflow")
+          : "",
+        maxInlineSize: textEl?.classList.contains("enhanced-zoom-title-text")
+          ? "24ch"
+          : "",
+      };
+    });
+
+    return {
+      active: true,
+      justifyContent: readStyleValue(
+        headerStyles,
+        "justifyContent",
+        "justify-content",
+        "center"
+      ),
+      items,
     };
   }
 

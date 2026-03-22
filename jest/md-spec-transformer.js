@@ -85,6 +85,15 @@ function parseAssertViewChrome(l) {
   };
 }
 
+function parseAssertHeader(l) {
+  l.nextNotEmpty();
+
+  return {
+    type: "assertHeader",
+    state: parseJsonBlock(l, "parseAssertHeader"),
+  };
+}
+
 function parseSimulateKeydown(l) {
   const key = l.line.replace(/- keydown: `([^`]+)`/, "$1");
 
@@ -150,6 +159,8 @@ function parseAction(l) {
     return parseAssertState(l);
   } else if (l.line.startsWith("- assertViewChrome:")) {
     return parseAssertViewChrome(l);
+  } else if (l.line.startsWith("- assertHeader:")) {
+    return parseAssertHeader(l);
   } else if (l.line.startsWith("- platform:")) {
     return parsePlatform(l);
   }
@@ -259,6 +270,13 @@ module.exports.process = function process(sourceText, sourcePath, options) {
           code += `    // Waiting for all operations to be applied\n`;
           code += `    await new Promise((resolve) => setTimeout(resolve, 10));\n`;
           code += `    await expect(await getCurrentViewChromeState()).toEqual(${s(
+            action.state
+          )});\n`;
+          break;
+        case "assertHeader":
+          code += `    // Waiting for all operations to be applied\n`;
+          code += `    await new Promise((resolve) => setTimeout(resolve, 10));\n`;
+          code += `    await expect(await getCurrentHeaderState()).toEqual(${s(
             action.state
           )});\n`;
           break;
