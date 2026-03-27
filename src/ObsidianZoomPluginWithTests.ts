@@ -49,12 +49,18 @@ interface IHeaderItemState {
 interface IHeaderState {
   active: boolean;
   justifyContent: string;
+  paddingTop: string;
   items: IHeaderItemState[];
 }
 
 interface ISharedIndentationState {
   active: boolean;
   sharedPrefix: string;
+}
+
+interface ITestEnvironmentState {
+  bodyClasses?: string[];
+  cssVariables?: Record<string, string>;
 }
 
 function readStyleValue(
@@ -74,6 +80,8 @@ function readStyleValue(
 
 export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
   private editorView: EditorView;
+  private appliedTestBodyClasses = new Set<string>();
+  private appliedTestCssVariables = new Set<string>();
 
   wait(time: number) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -109,6 +117,34 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
     }
 
     await this.settings.save();
+    await this.wait(10);
+  }
+
+  async applyTestEnvironment(state: ITestEnvironmentState) {
+    const body = this.editorView.dom.ownerDocument.body;
+
+    for (const className of this.appliedTestBodyClasses) {
+      body.classList.remove(className);
+    }
+    this.appliedTestBodyClasses.clear();
+
+    for (const variableName of this.appliedTestCssVariables) {
+      body.style.removeProperty(variableName);
+    }
+    this.appliedTestCssVariables.clear();
+
+    for (const className of state.bodyClasses ?? []) {
+      body.classList.add(className);
+      this.appliedTestBodyClasses.add(className);
+    }
+
+    for (const [variableName, value] of Object.entries(
+      state.cssVariables ?? {}
+    )) {
+      body.style.setProperty(variableName, value);
+      this.appliedTestCssVariables.add(variableName);
+    }
+
     await this.wait(10);
   }
 
@@ -220,6 +256,9 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
             break;
           case "applySettings":
             await this.applySettings(data);
+            break;
+          case "applyTestEnvironment":
+            await this.applyTestEnvironment(data);
             break;
           case "simulateKeydown":
             this.simulateKeydown(data);
@@ -385,6 +424,7 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
       return {
         active: false,
         justifyContent: "",
+        paddingTop: "0px",
         items: [],
       };
     }
@@ -425,6 +465,12 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
         "justifyContent",
         "justify-content",
         "center"
+      ),
+      paddingTop: readStyleValue(
+        headerStyles,
+        "paddingTop",
+        "padding-top",
+        "0px"
       ),
       items,
     };

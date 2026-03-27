@@ -17,6 +17,7 @@ text
 {
   "active": true,
   "justifyContent": "center",
+  "paddingTop": "0px",
   "items": [
     {
       "text": "test",
@@ -70,6 +71,7 @@ text
 {
   "active": true,
   "justifyContent": "center",
+  "paddingTop": "0px",
   "items": [
     {
       "text": "test",
@@ -123,6 +125,7 @@ text
 {
   "active": true,
   "justifyContent": "center",
+  "paddingTop": "0px",
   "items": [
     {
       "text": "test",
@@ -146,6 +149,71 @@ text
     {
       "text": "Child Section With Another Extremely Long Display Title",
       "title": "Child Section With Another Extremely Long Display Title",
+      "headingLevel": "2",
+      "kind": "heading",
+      "textOverflow": "ellipsis",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "maxInlineSize": "24ch"
+    }
+  ]
+}
+```
+
+# Should offset the breadcrumb below the phone safe area while keeping it centered
+
+- applyTestEnvironment:
+
+```json
+{
+  "bodyClasses": ["is-phone"],
+  "cssVariables": {
+    "--safe-area-inset-top": "32px"
+  }
+}
+```
+
+- applyState:
+
+```md
+# Parent
+
+## Child|
+
+text
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- assertHeader:
+
+```json
+{
+  "active": true,
+  "justifyContent": "center",
+  "paddingTop": "32px",
+  "items": [
+    {
+      "text": "test",
+      "title": "test",
+      "kind": "root",
+      "textOverflow": "ellipsis",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "maxInlineSize": "24ch"
+    },
+    {
+      "text": "Parent",
+      "title": "Parent",
+      "headingLevel": "1",
+      "kind": "heading",
+      "textOverflow": "ellipsis",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "maxInlineSize": "24ch"
+    },
+    {
+      "text": "Child",
+      "title": "Child",
       "headingLevel": "2",
       "kind": "heading",
       "textOverflow": "ellipsis",

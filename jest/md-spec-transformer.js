@@ -76,6 +76,15 @@ function parseApplySettings(l) {
   };
 }
 
+function parseApplyTestEnvironment(l) {
+  l.nextNotEmpty();
+
+  return {
+    type: "applyTestEnvironment",
+    state: parseJsonBlock(l, "parseApplyTestEnvironment"),
+  };
+}
+
 function parseAssertViewChrome(l) {
   l.nextNotEmpty();
 
@@ -158,6 +167,8 @@ function parseAction(l) {
     return parseApplyState(l);
   } else if (l.line.startsWith("- applySettings:")) {
     return parseApplySettings(l);
+  } else if (l.line.startsWith("- applyTestEnvironment:")) {
+    return parseApplyTestEnvironment(l);
   } else if (l.line.startsWith("- keydown:")) {
     return parseSimulateKeydown(l);
   } else if (l.line.startsWith("- execute:")) {
@@ -263,6 +274,9 @@ module.exports.process = function process(sourceText, sourcePath, options) {
           break;
         case "applySettings":
           code += `    await applySettings(${s(action.settings)});\n`;
+          break;
+        case "applyTestEnvironment":
+          code += `    await applyTestEnvironment(${s(action.state)});\n`;
           break;
         case "executeCommandById":
           code += `    await executeCommandById(${s(action.command)});\n`;

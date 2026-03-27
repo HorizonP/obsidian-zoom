@@ -50,7 +50,13 @@ interface IHeaderItemState {
 interface IHeaderState {
   active: boolean;
   justifyContent: string;
+  paddingTop: string;
   items: IHeaderItemState[];
+}
+
+interface ITestEnvironmentState {
+  bodyClasses?: string[];
+  cssVariables?: Record<string, string>;
 }
 
 interface ISharedIndentationState {
@@ -62,6 +68,9 @@ declare function applyState(state: string): Promise<void>;
 declare function applyState(state: string[]): Promise<void>;
 declare function applySettings(
   settings: IZoomVisibilitySettings
+): Promise<void>;
+declare function applyTestEnvironment(
+  state: ITestEnvironmentState
 ): Promise<void>;
 declare function parseState(state: string): Promise<IState>;
 declare function parseState(state: string[]): Promise<IState>;
