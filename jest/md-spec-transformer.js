@@ -85,6 +85,15 @@ function parseApplyTestEnvironment(l) {
   };
 }
 
+function parseClickHeaderItem(l) {
+  l.nextNotEmpty();
+
+  return {
+    type: "clickHeaderItem",
+    state: parseJsonBlock(l, "parseClickHeaderItem"),
+  };
+}
+
 function parseAssertViewChrome(l) {
   l.nextNotEmpty();
 
@@ -169,6 +178,8 @@ function parseAction(l) {
     return parseApplySettings(l);
   } else if (l.line.startsWith("- applyTestEnvironment:")) {
     return parseApplyTestEnvironment(l);
+  } else if (l.line.startsWith("- clickHeaderItem:")) {
+    return parseClickHeaderItem(l);
   } else if (l.line.startsWith("- keydown:")) {
     return parseSimulateKeydown(l);
   } else if (l.line.startsWith("- execute:")) {
@@ -277,6 +288,9 @@ module.exports.process = function process(sourceText, sourcePath, options) {
           break;
         case "applyTestEnvironment":
           code += `    await applyTestEnvironment(${s(action.state)});\n`;
+          break;
+        case "clickHeaderItem":
+          code += `    await clickHeaderItem(${s(action.state)});\n`;
           break;
         case "executeCommandById":
           code += `    await executeCommandById(${s(action.command)});\n`;

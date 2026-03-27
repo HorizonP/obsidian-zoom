@@ -25,6 +25,7 @@ module.exports = class CustomEnvironment extends TestEnvironment {
     this.createCommand("applyState");
     this.createCommand("applySettings");
     this.createCommand("applyTestEnvironment");
+    this.createCommand("clickHeaderItem");
     this.createCommand("simulateKeydown");
     this.createCommand("executeCommandById");
     this.createCommand("replaceSelection");

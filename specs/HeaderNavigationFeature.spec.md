@@ -173,6 +173,69 @@ text
 }
 ```
 
+# Should zoom to the tapped breadcrumb ancestor on phone
+
+- applyTestEnvironment:
+
+```json
+{
+  "bodyClasses": ["is-phone"],
+  "cssVariables": {
+    "--safe-area-inset-top": "32px"
+  }
+}
+```
+
+- applyState:
+
+```md
+# Parent
+
+Parent text
+
+## Child
+
+Child text
+
+### Leaf|
+
+Leaf text
+
+# Outside
+
+Outside text
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- clickHeaderItem:
+
+```json
+{
+  "index": 1,
+  "eventType": "touchend"
+}
+```
+
+- assertState:
+
+```md
+# Parent
+
+Parent text
+
+## Child
+
+Child text
+
+### Leaf|
+
+Leaf text
+
+# Outside #hidden
+ #hidden
+Outside text #hidden
+```
+
 - applyState:
 
 ```md

@@ -63,6 +63,11 @@ interface ITestEnvironmentState {
   cssVariables?: Record<string, string>;
 }
 
+interface IHeaderClickState {
+  index: number;
+  eventType?: "click" | "touchend";
+}
+
 function readStyleValue(
   styles: CSSStyleDeclaration,
   camelCaseName: keyof CSSStyleDeclaration,
@@ -143,6 +148,38 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
     )) {
       body.style.setProperty(variableName, value);
       this.appliedTestCssVariables.add(variableName);
+    }
+
+    await this.wait(10);
+  }
+
+  async clickHeaderItem(state: IHeaderClickState) {
+    const headerItems = Array.from(
+      this.editorView.dom.ownerDocument.querySelectorAll<HTMLElement>(
+        ".enhanced-zoom-title"
+      )
+    );
+    const headerItem = headerItems[state.index];
+
+    if (!headerItem) {
+      throw new Error(`Header item ${state.index} not found`);
+    }
+
+    switch (state.eventType ?? "click") {
+      case "touchend":
+        headerItem.dispatchEvent(
+          new Event("touchstart", { bubbles: true, cancelable: true })
+        );
+        headerItem.dispatchEvent(
+          new Event("touchend", { bubbles: true, cancelable: true })
+        );
+        break;
+      case "click":
+      default:
+        headerItem.dispatchEvent(
+          new MouseEvent("click", { bubbles: true, cancelable: true })
+        );
+        break;
     }
 
     await this.wait(10);
@@ -259,6 +296,9 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
             break;
           case "applyTestEnvironment":
             await this.applyTestEnvironment(data);
+            break;
+          case "clickHeaderItem":
+            await this.clickHeaderItem(data);
             break;
           case "simulateKeydown":
             this.simulateKeydown(data);

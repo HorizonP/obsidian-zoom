@@ -13,3 +13,5 @@ Each breadcrumb item shows the display text of its source line rather than the r
 Long breadcrumb segments are visually truncated with an ellipsis so the header remains compact. Hovering a breadcrumb still reveals the full cleaned display text via the element tooltip.
 
 Icons, heading-level badges, and click navigation behavior remain unchanged.
+
+Breadcrumb items remain tappable on phone-sized mobile layouts while the editor is focused, and tapping an ancestor breadcrumb zooms back out to that specific level.

@@ -59,6 +59,11 @@ interface ITestEnvironmentState {
   cssVariables?: Record<string, string>;
 }
 
+interface IHeaderClickState {
+  index: number;
+  eventType?: "click" | "touchend";
+}
+
 interface ISharedIndentationState {
   active: boolean;
   sharedPrefix: string;
@@ -72,6 +77,7 @@ declare function applySettings(
 declare function applyTestEnvironment(
   state: ITestEnvironmentState
 ): Promise<void>;
+declare function clickHeaderItem(state: IHeaderClickState): Promise<void>;
 declare function parseState(state: string): Promise<IState>;
 declare function parseState(state: string[]): Promise<IState>;
 declare function simulateKeydown(keys: string): Promise<void>;

@@ -130,3 +130,51 @@ test("should handle click on icon within breadcrumb", () => {
 
   expect(onClick).toHaveBeenCalledWith(10);
 });
+
+test("should handle touchend on header link", () => {
+  const onClick = jest.fn();
+  const h = renderHeader(document, {
+    breadcrumbs: [
+      { title: "Document", pos: null, type: { kind: "root" } },
+      { title: "header 1", pos: 10, type: { kind: "heading", level: 1 } },
+    ],
+    onClick,
+  });
+
+  const title = h.querySelectorAll<HTMLElement>(".enhanced-zoom-title")[1];
+
+  title.dispatchEvent(
+    new Event("touchstart", { bubbles: true, cancelable: true })
+  );
+  title.dispatchEvent(
+    new Event("touchend", { bubbles: true, cancelable: true })
+  );
+
+  expect(onClick).toHaveBeenCalledWith(10);
+});
+
+test("should not fire duplicate activation after touchend and click", () => {
+  const onClick = jest.fn();
+  const h = renderHeader(document, {
+    breadcrumbs: [
+      { title: "Document", pos: null, type: { kind: "root" } },
+      { title: "header 1", pos: 10, type: { kind: "heading", level: 1 } },
+    ],
+    onClick,
+  });
+
+  const title = h.querySelectorAll<HTMLElement>(".enhanced-zoom-title")[1];
+
+  title.dispatchEvent(
+    new Event("touchstart", { bubbles: true, cancelable: true })
+  );
+  title.dispatchEvent(
+    new Event("touchend", { bubbles: true, cancelable: true })
+  );
+  title.dispatchEvent(
+    new MouseEvent("click", { bubbles: true, cancelable: true })
+  );
+
+  expect(onClick).toHaveBeenCalledTimes(1);
+  expect(onClick).toHaveBeenCalledWith(10);
+});
