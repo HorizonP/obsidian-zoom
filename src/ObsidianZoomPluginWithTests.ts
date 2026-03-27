@@ -22,6 +22,19 @@ const keysMap: { [key: string]: number } = {
   KeyA: 65,
 };
 
+function getTestPort() {
+  const parsedPort = Number.parseInt(
+    process.env.ENHANCED_ZOOM_TEST_PORT || "",
+    10
+  );
+
+  if (Number.isInteger(parsedPort) && parsedPort > 0) {
+    return parsedPort;
+  }
+
+  return 8080;
+}
+
 interface IHeaderItemState {
   text: string;
   title: string;
@@ -37,6 +50,11 @@ interface IHeaderState {
   active: boolean;
   justifyContent: string;
   items: IHeaderItemState[];
+}
+
+interface ISharedIndentationState {
+  active: boolean;
+  sharedPrefix: string;
 }
 
 function readStyleValue(
@@ -185,7 +203,7 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
   }
 
   async connect() {
-    const ws = new WebSocket("ws://127.0.0.1:8080/");
+    const ws = new WebSocket(`ws://127.0.0.1:${getTestPort()}/`);
     await this.prepareForTests();
     ws.send("ready");
 
@@ -223,6 +241,9 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
             break;
           case "getCurrentHeaderState":
             result = this.getCurrentHeaderState();
+            break;
+          case "getCurrentSharedIndentationState":
+            result = this.getCurrentSharedIndentationState();
             break;
         }
       } catch (e) {
@@ -407,6 +428,12 @@ export default class ObsidianZoomPluginWithTests extends EnhancedZoomPlugin {
       ),
       items,
     };
+  }
+
+  getCurrentSharedIndentationState(): ISharedIndentationState {
+    return this.zoomFeature.calculateSharedIndentationState(
+      this.editorView.state
+    );
   }
 
   parseState(content: string[]): IState;

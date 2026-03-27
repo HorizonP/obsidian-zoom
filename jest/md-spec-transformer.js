@@ -94,6 +94,15 @@ function parseAssertHeader(l) {
   };
 }
 
+function parseAssertSharedIndentation(l) {
+  l.nextNotEmpty();
+
+  return {
+    type: "assertSharedIndentation",
+    state: parseJsonBlock(l, "parseAssertSharedIndentation"),
+  };
+}
+
 function parseSimulateKeydown(l) {
   const key = l.line.replace(/- keydown: `([^`]+)`/, "$1");
 
@@ -161,6 +170,8 @@ function parseAction(l) {
     return parseAssertViewChrome(l);
   } else if (l.line.startsWith("- assertHeader:")) {
     return parseAssertHeader(l);
+  } else if (l.line.startsWith("- assertSharedIndentation:")) {
+    return parseAssertSharedIndentation(l);
   } else if (l.line.startsWith("- platform:")) {
     return parsePlatform(l);
   }
@@ -277,6 +288,13 @@ module.exports.process = function process(sourceText, sourcePath, options) {
           code += `    // Waiting for all operations to be applied\n`;
           code += `    await new Promise((resolve) => setTimeout(resolve, 10));\n`;
           code += `    await expect(await getCurrentHeaderState()).toEqual(${s(
+            action.state
+          )});\n`;
+          break;
+        case "assertSharedIndentation":
+          code += `    // Waiting for all operations to be applied\n`;
+          code += `    await new Promise((resolve) => setTimeout(resolve, 10));\n`;
+          code += `    await expect(await getCurrentSharedIndentationState()).toEqual(${s(
             action.state
           )});\n`;
           break;

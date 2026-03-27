@@ -114,3 +114,92 @@ text #hidden
 ## Second|
 # Third #hidden
 ```
+
+# Should remove shared indentation when zooming into a nested list item
+
+- applyState:
+
+```md
+- Parent
+  - Child|
+    - Grandchild
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- assertState:
+
+```md
+- Parent #hidden
+  - Child|
+    - Grandchild
+```
+
+- assertSharedIndentation:
+
+```json
+{
+  "active": true,
+  "sharedPrefix": "  "
+}
+```
+
+# Should recalculate shared indentation after editing children while zoomed in
+
+- applyState:
+
+```md
+- Parent
+  - Child|
+    - Grandchild
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- keydown: `Enter`
+- replaceSelection: `New Child`
+- assertState:
+
+```md
+- Parent #hidden
+  - Child
+  - New Child|
+    - Grandchild
+```
+
+- assertSharedIndentation:
+
+```json
+{
+  "active": true,
+  "sharedPrefix": "  "
+}
+```
+
+# Should clear shared indentation when zooming out
+
+- applyState:
+
+```md
+- Parent
+  - Child|
+    - Grandchild
+```
+
+- execute: `enhanced-zoom:zoom-in`
+- assertSharedIndentation:
+
+```json
+{
+  "active": true,
+  "sharedPrefix": "  "
+}
+```
+
+- execute: `enhanced-zoom:zoom-out`
+- assertSharedIndentation:
+
+```json
+{
+  "active": false,
+  "sharedPrefix": ""
+}
+```

@@ -8,6 +8,10 @@ import { isFoldingEnabled } from "./utils/isFoldingEnabled";
 
 import { CalculateRangeForZooming } from "../logic/CalculateRangeForZooming";
 import { KeepOnlyZoomedContentVisible } from "../logic/KeepOnlyZoomedContentVisible";
+import {
+  RemoveSharedIndentation,
+  SharedIndentationState,
+} from "../logic/RemoveSharedIndentation";
 import { LoggerService } from "../services/LoggerService";
 import { getEditorViewFromEditor } from "../utils/getEditorViewFromEditor";
 
@@ -21,6 +25,7 @@ export class ZoomFeature implements Feature {
   private keepOnlyZoomedContentVisible = new KeepOnlyZoomedContentVisible(
     this.logger
   );
+  private removeSharedIndentation = new RemoveSharedIndentation();
 
   private calculateRangeForZooming = new CalculateRangeForZooming();
 
@@ -36,6 +41,12 @@ export class ZoomFeature implements Feature {
     return this.keepOnlyZoomedContentVisible.calculateHiddenContentRanges(
       state
     );
+  }
+
+  public calculateSharedIndentationState(
+    state: EditorState
+  ): SharedIndentationState {
+    return this.removeSharedIndentation.getSharedIndentationState(state);
   }
 
   public notifyAfterZoomIn(cb: ZoomInCallback) {
@@ -119,6 +130,9 @@ export class ZoomFeature implements Feature {
   async load() {
     this.plugin.registerEditorExtension(
       this.keepOnlyZoomedContentVisible.getExtension()
+    );
+    this.plugin.registerEditorExtension(
+      this.removeSharedIndentation.getExtension()
     );
 
     this.plugin.addCommand({

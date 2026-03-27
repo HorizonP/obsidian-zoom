@@ -3,6 +3,19 @@ const WebSocket = require("ws");
 
 let idSeq = 1;
 
+function getTestPort() {
+  const parsedPort = Number.parseInt(
+    process.env.ENHANCED_ZOOM_TEST_PORT || "",
+    10
+  );
+
+  if (Number.isInteger(parsedPort) && parsedPort > 0) {
+    return parsedPort;
+  }
+
+  return 8080;
+}
+
 module.exports = class CustomEnvironment extends TestEnvironment {
   async setup() {
     await super.setup();
@@ -18,6 +31,7 @@ module.exports = class CustomEnvironment extends TestEnvironment {
     this.createCommand("getCurrentState");
     this.createCommand("getCurrentViewChromeState");
     this.createCommand("getCurrentHeaderState");
+    this.createCommand("getCurrentSharedIndentationState");
   }
 
   createCommand(type) {
@@ -25,7 +39,7 @@ module.exports = class CustomEnvironment extends TestEnvironment {
   }
 
   async initWs() {
-    this.ws = new WebSocket("ws://127.0.0.1:8080");
+    this.ws = new WebSocket(`ws://127.0.0.1:${getTestPort()}`);
 
     await new Promise((resolve) => this.ws.on("open", resolve));
 

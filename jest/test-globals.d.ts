@@ -53,6 +53,11 @@ interface IHeaderState {
   items: IHeaderItemState[];
 }
 
+interface ISharedIndentationState {
+  active: boolean;
+  sharedPrefix: string;
+}
+
 declare function applyState(state: string): Promise<void>;
 declare function applyState(state: string[]): Promise<void>;
 declare function applySettings(
@@ -66,3 +71,4 @@ declare function executeCommandById(keys: string): Promise<void>;
 declare function getCurrentState(): Promise<IState>;
 declare function getCurrentViewChromeState(): Promise<IViewChromeState>;
 declare function getCurrentHeaderState(): Promise<IHeaderState>;
+declare function getCurrentSharedIndentationState(): Promise<ISharedIndentationState>;

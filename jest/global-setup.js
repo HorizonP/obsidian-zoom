@@ -34,6 +34,19 @@ global.originalObsidianConfig = null;
 global.OBSIDIAN_CONFIG_PATH = OBSIDIAN_CONFIG_PATH;
 global.KILL_CMD = KILL_CMD;
 
+function getTestPort() {
+  const parsedPort = Number.parseInt(
+    process.env.ENHANCED_ZOOM_TEST_PORT || "",
+    10
+  );
+
+  if (Number.isInteger(parsedPort) && parsedPort > 0) {
+    return parsedPort;
+  }
+
+  return 8080;
+}
+
 function wait(t) {
   return new Promise((resolve) => setTimeout(resolve, t));
 }
@@ -156,6 +169,8 @@ module.exports = async () => {
     return;
   }
 
+  const testPort = getTestPort();
+
   cp.spawnSync(KILL_CMD[0], KILL_CMD.slice(1));
   await wait(2000);
 
@@ -163,13 +178,14 @@ module.exports = async () => {
   await prepareVault();
 
   global.wss = new WebSocket.Server({
-    port: 8080,
+    port: testPort,
   });
 
   debug(`Running "${OBSIDIAN_APP_CMD[0]}"`);
   const obsidian = cp.exec(OBSIDIAN_APP_CMD.join(" "), {
     env: {
       ...process.env,
+      ENHANCED_ZOOM_TEST_PORT: String(testPort),
       TEST_PLATFORM: "1",
     },
   });
